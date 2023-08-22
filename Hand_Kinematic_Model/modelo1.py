@@ -1,16 +1,9 @@
 import numpy as np
-import dh as fk
 import roboticstoolbox as rtb
 import math
 from spatialmath import *
 
 pi = math.pi
-
-j = fk.dh_par(90, 60, -60)
-Tm = fk.dh_kine(j)
-ee = fk.el_xyzpos(Tm)
-p0, p1, p2, p3, p4, p5 = fk.el_pos2base(Tm)
-fk.fk_draw2(ee)
 
 # %%%%%%%%%%% Dedo Indice - DH %%%%%%%%%%%%%%%%%%%%%%
 
@@ -126,15 +119,15 @@ qe = [0,0,0,0,0]
 qp = [0,0,0,0]
 
 Mindice=indice.fkine(qi)
-Mmedio=medio.fkine(qm);
-Manular=anular.fkine(qa);
-Mmenique=menique.fkine(qe);
-Mpulgar=pulgar.fkine(qp);
+Mmedio=medio.fkine(qm)
+Manular=anular.fkine(qa)
+Mmenique=menique.fkine(qe)
+Mpulgar=pulgar.fkine(qp)
 
 # %%
 T = SE3(101.94, 0, 37.14) * SE3.OA([0,0,1], [1,0,0])
 # %%
-sol = indice.ikine_min(T)
+sol = indice.ikine_NR(T)
 
 
 def xyz_2_deg(pos):
@@ -145,11 +138,11 @@ def xyz_2_deg(pos):
     Tme = SE3(pos[3]) * SE3.OA([0,0,1], [1,0,0])
     Tp = SE3(pos[4]) * SE3.OA([0,0,1], [1,0,0])
     
-    deg_i = indice.ikine_min(Ti).q
-    deg_m = medio.ikine_min(Tm).q
-    deg_a = anular.ikine_min(Ta).q
-    deg_me = menique.ikine_min(Tme).q
-    deg_p = pulgar.ikine_min(Tp).q
+    deg_i = indice.ikine_NR(Ti).q
+    deg_m = medio.ikine_NR(Tm).q
+    deg_a = anular.ikine_NR(Ta).q
+    deg_me = menique.ikine_NR(Tme).q
+    deg_p = pulgar.ikine_NR(Tp).q
     
     return np.vstack((deg_i, deg_m, deg_a, deg_me)), deg_p
     
