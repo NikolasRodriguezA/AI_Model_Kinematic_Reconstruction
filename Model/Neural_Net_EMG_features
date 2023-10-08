@@ -1,0 +1,48 @@
+"""
+Feature Extraction from EMG signals and Neural Net model to make a 
+regression to 42 (x,y,z) fingers articulation based on a /Data
+
+@author: Nikolas Rodriguez
+"""
+
+import os 
+import pandas as pd 
+
+import torch
+
+
+class FolderReader:
+    def __init__(self, folder_path):
+        self.folder_path = folder_path
+        self.dataframes = []
+
+    def read_dataframes(self):
+        for archivo in os.listdir(self.folder_path):
+            if archivo.endswith('.csv'):
+                ruta_archivo = os.path.join(self.folder_path, archivo)
+                df = pd.read_csv(ruta_archivo)
+                self.dataframes.append(df)
+
+    def get_dataframe(self, index):
+        if 0 <= index < len(self.dataframes):
+            return self.dataframes[index]
+        else:
+            return None
+
+    def get_dataframe_names(self):
+        return [df.columns.tolist() for df in self.dataframes]
+        
+
+
+carpeta = '../Data' 
+
+folder_reader = FolderReader(carpeta)
+folder_reader.read_dataframes()
+
+df = pd.concat(folder_reader.dataframes)
+
+emg_names = ['EMG_CHANNEL_' + str(i+1) for i in range(0,8)]
+
+df_emg_channels = df[emg_names]
+
+
